@@ -9,6 +9,11 @@ const socket = io();
 // --------------------
 // HTML Elements
 // --------------------
+
+const statsUsers=document.getElementById("statsUsers");
+const statsMessages=document.getElementById("statsMessages");
+const statsLocations=document.getElementById("statsLocations");
+const statsSOS=document.getElementById("statsSOS");
 const locationButton = document.getElementById("locationButton");
 const joinButton = document.getElementById("joinButton");
 const landingPage = document.getElementById("landingPage");
@@ -57,6 +62,10 @@ let userLocations = {};
 
 let mediaRecorder = null;
 let audioChunks = [];
+// Store my latest location
+let myLatitude = null;
+let myLongitude = null;
+
 // =========================================
 // JOIN NETWORK
 // =========================================
@@ -214,11 +223,15 @@ sosButton.addEventListener("click", () => {
 
     socket.emit("emergency", {
 
-        user: username,
+    user: username,
 
-        message: "🚨 NEED IMMEDIATE ASSISTANCE!"
+    message: "🚨 NEED IMMEDIATE ASSISTANCE!",
 
-    });
+    latitude: myLatitude,
+
+    longitude: myLongitude
+
+});
 
 });
 
@@ -234,6 +247,26 @@ socket.on("emergencyAlert", (data) => {
     `;
 
     alertBox.classList.remove("hidden");
+    if(data.latitude && data.longitude){
+
+    L.marker(
+        [data.latitude,data.longitude],
+        {icon:redIcon}
+    )
+    .addTo(map)
+    .bindPopup(`
+        <b>🚨 Emergency</b><br>
+        ${data.user}<br>
+        Needs Immediate Assistance
+    `)
+    .openPopup();
+
+    map.setView(
+        [data.latitude,data.longitude],
+        15
+    );
+
+}
 
     const location = userLocations[data.user];
 console.log("SOS received from:", data.user);
@@ -277,19 +310,22 @@ locationButton.addEventListener("click", () => {
 
     }
 
-    navigator.geolocation.getCurrentPosition((position) => {
+   navigator.geolocation.getCurrentPosition((position) => {
 
-        socket.emit("shareLocation", {
+    myLatitude = position.coords.latitude;
+    myLongitude = position.coords.longitude;
 
-            user: username,
+    socket.emit("shareLocation", {
 
-            latitude: position.coords.latitude,
+        user: username,
 
-            longitude: position.coords.longitude
+        latitude: myLatitude,
 
-        });
+        longitude: myLongitude
 
     });
+
+});
 
 });
 
@@ -327,6 +363,38 @@ L.tileLayer(
     }
 ).addTo(map);
 
+<<<<<<< HEAD
+// =========================================
+// RED SOS ICON
+// =========================================
+
+const redIcon = new L.Icon({
+
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+
+    iconSize: [25,41],
+
+    iconAnchor: [12,41],
+
+    popupAnchor: [1,-34],
+
+    shadowSize: [41,41]
+
+});
+
+
+socket.on("networkStats",(stats)=>{
+
+    statsUsers.innerHTML=stats.users;
+
+    statsMessages.innerHTML=stats.messages;
+
+    statsLocations.innerHTML=stats.locations;
+
+    statsSOS.innerHTML=stats.sos;
+=======
 analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
@@ -494,5 +562,6 @@ ${medicalTeams}
 ${rescueTeams}
 
 `;
+>>>>>>> dc1920a0232256fd3e9b59d85067d55be8052af4
 
 });

@@ -54,6 +54,12 @@ const io = new Server(server, {
 
 let users = {};
 
+let totalMessages=0;
+
+let totalSOS=0;
+
+let totalLocations=0;
+
 
 
 
@@ -132,6 +138,30 @@ io.emit(
     Object.values(users)
 );
 
+io.emit("networkStats",{
+
+    users:Object.keys(users).length,
+
+    messages:totalMessages,
+
+    locations:totalLocations,
+
+    sos:totalSOS
+
+});
+
+io.emit("networkStats",{
+
+    users:Object.keys(users).length,
+
+    messages:totalMessages,
+
+    locations:totalLocations,
+
+    sos:totalSOS
+
+});
+
 
 
 
@@ -176,7 +206,21 @@ io.emit(
                     ":",
                     data.message
                 );
+                
 
+                totalMessages++;
+
+                io.emit("networkStats",{
+
+                    users:Object.keys(users).length,
+
+                    messages:totalMessages,
+
+                    locations:totalLocations,
+
+                    sos:totalSOS
+
+                });
 
 
                 io.emit(
@@ -214,6 +258,20 @@ io.emit(
                 );
 
 
+                totalSOS++;
+
+            io.emit("networkStats",{
+
+               users:Object.keys(users).length,
+
+                messages:totalMessages,
+
+                locations:totalLocations,
+
+                sos:totalSOS
+
+                });
+
 
                 io.emit(
                     "emergencyAlert",
@@ -244,7 +302,19 @@ function(data){
         data
     );
 
+    totalLocations++;
 
+    io.emit("networkStats",{
+
+    users:Object.keys(users).length,
+
+    messages:totalMessages,
+
+    locations:totalLocations,
+
+    sos:totalSOS
+
+    });
 
     io.emit(
         "receiveLocation",
