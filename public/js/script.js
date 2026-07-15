@@ -10,6 +10,7 @@ const socket = io();
 // HTML Elements
 // --------------------
 
+const recordButton = document.getElementById("recordButton");
 
 const fileInput=document.getElementById("fileInput");
 const fileButton=document.getElementById("fileButton");
@@ -40,7 +41,6 @@ const networkStatus = document.getElementById("networkStatus");
 
 const sosButton = document.getElementById("sosButton");
 
-const recordButton = document.getElementById("recordButton");
 
 const alertBox = document.getElementById("alertBox");
 const alertMessage = document.getElementById("alertMessage");
@@ -676,3 +676,87 @@ socket.on("receiveFile", (data) => {
     chatBox.scrollTop = chatBox.scrollHeight;
 
 });
+
+
+// =========================================
+// VOICE MESSAGE
+// =========================================
+
+recordButton.addEventListener("click", async () => {
+
+    // Start Recording
+    if (mediaRecorder === null || mediaRecorder.state === "inactive") {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        audioChunks = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.start();
+
+        recordButton.innerHTML = "⏹ Stop";
+
+        mediaRecorder.ondataavailable = (event) => {
+
+            audioChunks.push(event.data);
+
+        };
+
+        mediaRecorder.onstop = () => {
+
+            const audioBlob = new Blob(audioChunks, {
+                type: "audio/webm"
+            });
+
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+
+                socket.emit("voiceMessage", {
+
+                    user: username,
+
+                    audio: reader.result
+
+                });
+
+            };
+
+            reader.readAsDataURL(audioBlob);
+
+        };
+
+    }
+
+    // Stop Recording
+    else {
+
+        mediaRecorder.stop();
+
+        recordButton.innerHTML = "🎙️ Record";
+
+    }
+
+});
+
+socket.on("voiceMessage", (data) => {
+
+    const div = document.createElement("div");
+
+    div.className = "message";
+
+    div.innerHTML = `
+        <b>${data.user}</b><br>
+        <audio controls src="${data.audio}"></audio>
+    `;
+
+    chatBox.appendChild(div);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+});
+
+
