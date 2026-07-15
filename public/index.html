@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EchoLink | Emergency Communication Network</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Socket.IO Client -->
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         LANDING PAGE SECTION
+    ========================== -->
+
+    <section id="landingPage">
+
+
+        <nav class="navbar">
+
+            <div class="logo">
+                EchoLink
+            </div>
+
+
+            <div class="nav-status">
+                🟢 System Ready
+            </div>
+
+        </nav>
+
+
+
+        <div class="hero">
+
+
+            <div class="hero-text">
+
+
+                <h1>
+                    EchoLink
+                </h1>
+
+
+                <h2>
+                    Humanity's Emergency Communication Network
+                </h2>
+
+
+                <p>
+                    A decentralized communication system designed
+                    to reconnect people when traditional networks fail.
+                </p>
+
+
+                <button id="joinButton">
+                    Join Network
+                </button>
+
+
+            </div>
+
+
+
+            <div class="hero-card">
+
+
+                <div class="signal">
+                    📡
+                </div>
+
+
+                <h3>
+                    Alien EMP Scenario
+                </h3>
+
+
+                <p>
+                    Satellite communication disabled.
+                    EchoLink creates a local emergency relay network
+                    between survivors.
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+
+
+    <!-- =========================
+         MAIN DASHBOARD
+    ========================== -->
+
+    <section id="dashboard" class="hidden">
+
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+
+            <div>
+
+                <h1>
+                    EchoLink Network
+                </h1>
+
+                <p>
+                    Emergency Communication Dashboard
+                </p>
+
+            </div>
+
+
+
+            <div class="connection-box">
+
+                <span id="connectionStatus">
+                    Connecting...
+                </span>
+
+            </div>
+
+
+        </header>
+
+
+
+
+
+
+        <!-- MAIN GRID -->
+
+        <main class="dashboard-container">
+
+
+
+
+
+            <!-- =========================
+                 USERS PANEL
+            ========================== -->
+
+
+            <div class="panel users-panel">
+
+
+                <h2>
+                    Nearby Nodes
+                </h2>
+
+
+                <div id="userList">
+
+
+                    <!-- Users will appear here dynamically -->
+
+
+                    <div class="user">
+
+                        <span class="online">
+                            🟢
+                        </span>
+
+                        Waiting for users...
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="network-count">
+
+                    Connected Nodes:
+                    <span id="userCount">
+                        0
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- =========================
+                 CHAT PANEL
+            ========================== -->
+
+
+            <div class="panel chat-panel">
+
+
+                <h2>
+                    Communication Hub
+                </h2>
+
+
+
+                <div id="chatBox">
+
+
+                    <div class="message system-message">
+
+                        System:
+                        Welcome to EchoLink Network
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+               <div class="message-input">
+
+
+    <input 
+    type="text"
+    id="messageInput"
+    placeholder="Type message..."
+    >
+
+
+    <button id="sendButton">
+
+        Send
+
+    </button>
+
+
+    <button id="recordButton">
+
+        🎙️ Record
+
+    </button>
+
+
+</div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- =========================
+                 STATUS PANEL
+            ========================== -->
+
+
+            <div class="panel status-panel">
+
+
+                <h2>
+                    Network Status
+                </h2>
+
+
+
+
+                <div class="status-card">
+
+
+                    <h3>
+                        Connection
+                    </h3>
+
+
+                    <p id="networkStatus">
+                        🟢 Connected
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <div class="status-card">
+
+
+                    <h3>
+                        Relay Status
+                    </h3>
+
+
+                    <p>
+                        📡 Relay Active
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <div class="status-card">
+
+
+                    <h3>
+                        Signal Strength
+                    </h3>
+
+
+                    <p>
+                        ⚡ Strong
+                    </p>
+
+
+                </div>
+                <h2 style="margin-top:20px;">Network Map</h2>
+
+<div id="map"></div>
+
+
+
+            </div>
+
+
+
+
+        </main>
+
+
+
+
+
+
+
+
+        <!-- =========================
+             EMERGENCY BUTTON
+        ========================== -->
+
+<section class="emergency-section">
+
+
+
+    <button id="sosButton">
+
+        🚨 Emergency Broadcast
+
+    </button>
+
+    <button id="locationButton">
+    📍 Share Location
+</button>
+
+
+
+   
+
+
+
+    <p>
+
+        Send emergency alert or share your location
+
+    </p>
+
+
+</section>
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+    <!-- =========================
+         EMERGENCY POPUP
+    ========================== -->
+
+<!-- JOIN NETWORK MODAL -->
+
+<div id="joinModal" class="hidden">
+
+
+    <div class="join-box">
+
+
+        <h2>
+            📡 Connect to EchoLink
+        </h2>
+
+
+        <p>
+            Enter your identity to join the emergency network
+        </p>
+
+
+
+        <input 
+        type="text"
+        id="usernameInput"
+        placeholder="Enter your name"
+        >
+
+
+
+        <button id="connectButton">
+
+            Connect Network
+
+        </button>
+
+
+    </div>
+
+
+</div>
+    <div id="alertBox" class="hidden">
+
+
+        <div class="alert-content">
+
+
+            <h2>
+                🚨 EMERGENCY ALERT
+            </h2>
+
+
+            <p id="alertMessage">
+
+            </p>
+
+
+
+            <button id="closeAlert">
+
+                Close
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Javascript -->
+
+    <script src="js/script.js"></script>
+
+
+</body>
+
+
+</html>
