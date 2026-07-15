@@ -61,6 +61,7 @@ document.getElementById(
 
 
 let username = "";
+let userLocations = {};
 
 let mediaRecorder = null;
 let audioChunks = [];
@@ -270,6 +271,26 @@ socket.on("emergencyAlert", (data) => {
 
 }
 
+    const location = userLocations[data.user];
+console.log("SOS received from:", data.user);
+console.log(userLocations);
+if(location){
+
+    L.circleMarker(
+        [location.latitude, location.longitude],
+        {
+            radius: 12,
+            color: "red",
+            fillColor: "red",
+            fillOpacity: 0.8
+        }
+    )
+    .addTo(map)
+    .bindPopup(
+        `🚨 SOS ALERT<br><b>${data.user}</b>`
+    );
+
+}
 });
 
 // Close Alert
@@ -319,6 +340,11 @@ socket.on("receiveLocation", (data) => {
         `Shared Location`
     );
 
+    userLocations[data.user] = {
+    latitude: data.latitude,
+    longitude: data.longitude
+};
+
     L.marker([data.latitude, data.longitude])
         .addTo(map)
         .bindPopup(`<b>${data.user}</b><br>Emergency Node`)
@@ -340,6 +366,42 @@ L.tileLayer(
     }
 ).addTo(map);
 
+<<<<<<< HEAD
+=======
+
+// =========================================
+// RED SOS ICON
+// =========================================
+
+const redIcon = new L.Icon({
+
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+
+    iconSize: [25,41],
+
+    iconAnchor: [12,41],
+
+    popupAnchor: [1,-34],
+
+    shadowSize: [41,41]
+
+});
+
+
+socket.on("networkStats",(stats)=>{
+
+    statsUsers.innerHTML=stats.users;
+
+    statsMessages.innerHTML=stats.messages;
+
+    statsLocations.innerHTML=stats.locations;
+
+    statsSOS.innerHTML=stats.sos;
+
+});
+>>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
 analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
@@ -359,6 +421,12 @@ analyzeButton.addEventListener("click", function () {
     let priority = 5;
 
     let actions = [];
+
+    let ambulances = 0;
+
+    let medicalTeams = 0;
+
+    let rescueTeams = 0;
 
     if (
         text.includes("fire") ||
@@ -405,6 +473,17 @@ analyzeButton.addEventListener("click", function () {
             "Dispatch Ambulance",
             "Provide First Aid"
         );
+    
+        ambulances = Math.max(
+    1,
+    Math.ceil(affectedPeople / 5)
+);
+
+medicalTeams = Math.max(
+    1,
+    Math.ceil(affectedPeople / 10)
+);
+
     }
 
     if (
@@ -420,6 +499,12 @@ analyzeButton.addEventListener("click", function () {
             "Search For Survivors",
             "Deploy Rescue Team"
         );
+
+rescueTeams = Math.max(
+    1,
+    Math.ceil(affectedPeople / 8)
+);
+
     }
 
     if(affectedPeople >= 50){
@@ -473,7 +558,18 @@ ${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT" : ""}
 📋 Recommended Actions:
 
 ${[...new Set(actions)].join("\n")}
+
+🚑 Ambulances Needed:
+${ambulances}
+
+👨‍⚕️ Medical Teams:
+${medicalTeams}
+
+🚒 Rescue Teams:
+${rescueTeams}
+
 `;
+<<<<<<< HEAD
 
 });
 
@@ -558,5 +654,7 @@ socket.on("receiveFile",(data)=>{
     chatBox.appendChild(div);
 
     chatBox.scrollTop=chatBox.scrollHeight;
+=======
+>>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
 
 });
