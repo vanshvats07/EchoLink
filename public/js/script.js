@@ -10,6 +10,9 @@ const socket = io();
 // HTML Elements
 // --------------------
 
+
+const fileInput=document.getElementById("fileInput");
+const fileButton=document.getElementById("fileButton");
 const statsUsers=document.getElementById("statsUsers");
 const statsMessages=document.getElementById("statsMessages");
 const statsLocations=document.getElementById("statsLocations");
@@ -337,38 +340,6 @@ L.tileLayer(
     }
 ).addTo(map);
 
-<<<<<<< HEAD
-// =========================================
-// RED SOS ICON
-// =========================================
-
-const redIcon = new L.Icon({
-
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-
-    iconSize: [25,41],
-
-    iconAnchor: [12,41],
-
-    popupAnchor: [1,-34],
-
-    shadowSize: [41,41]
-
-});
-
-
-socket.on("networkStats",(stats)=>{
-
-    statsUsers.innerHTML=stats.users;
-
-    statsMessages.innerHTML=stats.messages;
-
-    statsLocations.innerHTML=stats.locations;
-
-    statsSOS.innerHTML=stats.sos;
-=======
 analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
@@ -503,6 +474,89 @@ ${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT" : ""}
 
 ${[...new Set(actions)].join("\n")}
 `;
->>>>>>> dc1920a0232256fd3e9b59d85067d55be8052af4
+
+});
+
+fileButton.addEventListener("click",()=>{
+
+    fileInput.click();
+
+});
+fileInput.addEventListener("change",()=>{
+
+    const file=fileInput.files[0];
+
+    if(!file) return;
+
+    const reader=new FileReader();
+
+    reader.onload=function(){
+
+        socket.emit("sendFile",{
+
+            user:username,
+
+            fileName:file.name,
+
+            fileType:file.type,
+
+            fileData:reader.result
+
+        });
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+socket.on("receiveFile",(data)=>{
+
+    const div=document.createElement("div");
+
+    div.className="message";
+
+    if(data.fileType.startsWith("image")){
+
+        div.innerHTML=`
+        <b>${data.user}</b><br>
+
+        <img
+        src="${data.fileData}"
+        style="
+        width:220px;
+        border-radius:10px;
+        margin-top:8px;
+        ">
+
+        `;
+
+    }
+
+    else{
+
+        div.innerHTML=`
+
+        <b>${data.user}</b>
+
+        <br>
+
+        <a
+        href="${data.fileData}"
+        download="${data.fileName}"
+        style="color:cyan;"
+        >
+
+        📄 ${data.fileName}
+
+        </a>
+
+        `;
+
+    }
+
+    chatBox.appendChild(div);
+
+    chatBox.scrollTop=chatBox.scrollHeight;
 
 });

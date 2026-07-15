@@ -1087,107 +1087,6 @@ margin-right:25%;
 
 }
 
-<<<<<<< HEAD
-/* ==============================
-NETWORK STATISTICS
-============================== */
-
-.status-card p{
-
-    margin:10px 0;
-
-    font-size:16px;
-
-}
-
-.status-card span{
-
-    color:#00f5ff;
-
-    font-weight:bold;
-
-}
-@keyframes fadeIn{
-
-from{
-
-opacity:0;
-
-transform:translateY(15px);
-
-}
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
-}
-#connectionStatus{
-
-color:#00ff7f;
-
-font-weight:bold;
-
-animation:pulse 1.5s infinite;
-
-}
-@keyframes pulse{
-
-0%{
-
-opacity:.5;
-
-}
-
-50%{
-
-opacity:1;
-
-}
-
-100%{
-
-opacity:.5;
-
-}
-
-}
-/* ===========================
-MESSAGE INPUT
-=========================== */
-
-#messageInput{
-
-    width:100%;
-
-    padding:14px;
-
-    border-radius:12px;
-
-    border:1px solid rgba(255,255,255,.2);
-
-    background:#111827;
-
-    color:white;
-
-    outline:none;
-
-    font-size:16px;
-
-    transition:.3s;
-
-}
-
-#messageInput:focus{
-
-    border-color:#00e5ff;
-
-    box-shadow:0 0 15px cyan;
-=======
 .ai-panel{
 
     display:flex;
@@ -1223,6 +1122,16 @@ MESSAGE INPUT
     min-height:100px;
 
     white-space:pre-wrap;
->>>>>>> dc1920a0232256fd3e9b59d85067d55be8052af4
+
+}
+#fileButton{
+
+    background:#7c3aed;
+
+}
+
+#fileButton:hover{
+
+    background:#6d28d9;
 
 }

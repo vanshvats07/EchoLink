@@ -94,6 +94,11 @@ io.on(
             "New device connected:",
             socket.id
         );
+        socket.on("sendFile",(data)=>{
+
+    io.emit("receiveFile",data);
+
+});
 
 
 
@@ -450,3 +455,4 @@ server.listen(
 
     }
 );
+
