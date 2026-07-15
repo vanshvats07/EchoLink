@@ -1226,3 +1226,20 @@ MESSAGE INPUT
     white-space:pre-wrap;
 }
 
+#timeline{
+
+    background:#111827;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    min-height:200px;
+
+    color:#00eaff;
+
+    font-family:monospace;
+
+    overflow-y:auto;
+
+}

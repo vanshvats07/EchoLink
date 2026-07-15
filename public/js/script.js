@@ -14,6 +14,8 @@ const socket = io();
 const fileInput=document.getElementById("fileInput");
 const fileButton=document.getElementById("fileButton");
 const statsUsers=document.getElementById("statsUsers");
+const timeline =
+document.getElementById("timeline");
 const statsMessages=document.getElementById("statsMessages");
 const statsLocations=document.getElementById("statsLocations");
 const statsSOS=document.getElementById("statsSOS");
@@ -68,6 +70,22 @@ let audioChunks = [];
 // Store my latest location
 let myLatitude = null;
 let myLongitude = null;
+function addTimelineEvent(event){
+
+    const time =
+    new Date().toLocaleTimeString();
+
+    timeline.innerHTML =
+
+    "[" + time + "] " +
+
+    event +
+
+    "<br>" +
+
+    timeline.innerHTML;
+
+}
 
 // =========================================
 // JOIN NETWORK
@@ -94,6 +112,10 @@ connectButton.addEventListener("click", () => {
     dashboard.classList.remove("hidden");
 
     socket.emit("join", username);
+
+    addTimelineEvent(
+    username + " joined network"
+);
 
 });
 // =========================================
@@ -241,6 +263,9 @@ sosButton.addEventListener("click", () => {
 // Receive SOS
 socket.on("emergencyAlert", (data) => {
 
+    addTimelineEvent(
+    "🚨 SOS from " + data.user
+);
     alertMessage.innerHTML = `
         <h3>🚨 Emergency Alert</h3>
         <br>
@@ -335,6 +360,9 @@ locationButton.addEventListener("click", () => {
 // Receive location
 socket.on("receiveLocation", (data) => {
 
+    addTimelineEvent(
+    data.user + " shared location"
+);
     addMessage(
         "📍 " + data.user,
         `Shared Location`
@@ -536,6 +564,9 @@ else if(affectedPeople >= 10){
         categories.push("GENERAL");
     }
 
+    addTimelineEvent(
+    "AI Analysis Completed"
+);
    analysisOutput.innerHTML = `
 
 👥 People Affected:
