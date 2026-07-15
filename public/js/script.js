@@ -366,8 +366,6 @@ L.tileLayer(
     }
 ).addTo(map);
 
-<<<<<<< HEAD
-=======
 
 // =========================================
 // RED SOS ICON
@@ -401,7 +399,6 @@ socket.on("networkStats",(stats)=>{
     statsSOS.innerHTML=stats.sos;
 
 });
->>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
 analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
@@ -569,34 +566,32 @@ ${medicalTeams}
 ${rescueTeams}
 
 `;
-<<<<<<< HEAD
 
 });
-
-fileButton.addEventListener("click",()=>{
+fileButton.addEventListener("click", () => {
 
     fileInput.click();
 
 });
-fileInput.addEventListener("change",()=>{
+fileInput.addEventListener("change", () => {
 
-    const file=fileInput.files[0];
+    const file = fileInput.files[0];
 
-    if(!file) return;
+    if (!file) return;
 
-    const reader=new FileReader();
+    const reader = new FileReader();
 
-    reader.onload=function(){
+    reader.onload = function () {
 
-        socket.emit("sendFile",{
+        socket.emit("sendFile", {
 
-            user:username,
+            user: username,
 
-            fileName:file.name,
+            fileName: file.name,
 
-            fileType:file.type,
+            fileType: file.type,
 
-            fileData:reader.result
+            fileData: reader.result
 
         });
 
@@ -606,55 +601,47 @@ fileInput.addEventListener("change",()=>{
 
 });
 
-socket.on("receiveFile",(data)=>{
+// =========================================
+// LOCATION SHARING
+// =========================================
 
-    const div=document.createElement("div");
+socket.on("receiveLocation", (data) => {
 
-    div.className="message";
+    // location code
 
-    if(data.fileType.startsWith("image")){
+});
 
-        div.innerHTML=`
-        <b>${data.user}</b><br>
 
-        <img
-        src="${data.fileData}"
-        style="
-        width:220px;
-        border-radius:10px;
-        margin-top:8px;
-        ">
+// =========================================
+// FILE SHARING
+// =========================================
 
+socket.on("receiveFile", (data) => {
+
+    const div = document.createElement("div");
+
+    div.className = "message";
+
+    if (data.fileType.startsWith("image")) {
+
+        div.innerHTML = `
+            <b>${data.user}</b><br>
+            <img src="${data.fileData}" style="width:220px;border-radius:10px;">
         `;
 
-    }
+    } else {
 
-    else{
-
-        div.innerHTML=`
-
-        <b>${data.user}</b>
-
-        <br>
-
-        <a
-        href="${data.fileData}"
-        download="${data.fileName}"
-        style="color:cyan;"
-        >
-
-        📄 ${data.fileName}
-
-        </a>
-
+        div.innerHTML = `
+            <b>${data.user}</b><br>
+            <a href="${data.fileData}" download="${data.fileName}">
+                📄 ${data.fileName}
+            </a>
         `;
 
     }
 
     chatBox.appendChild(div);
 
-    chatBox.scrollTop=chatBox.scrollHeight;
-=======
->>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
+    chatBox.scrollTop = chatBox.scrollHeight;
 
 });

@@ -1087,8 +1087,6 @@ margin-right:25%;
 
 }
 
-<<<<<<< HEAD
-=======
  
 /* ==============================
 NETWORK STATISTICS
@@ -1191,7 +1189,6 @@ MESSAGE INPUT
     box-shadow:0 0 15px cyan;
 
 }
->>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
 .ai-panel{
 
     display:flex;
@@ -1227,19 +1224,5 @@ MESSAGE INPUT
     min-height:100px;
 
     white-space:pre-wrap;
-<<<<<<< HEAD
-
 }
-#fileButton{
-
-    background:#7c3aed;
-
-}
-
-#fileButton:hover{
-
-    background:#6d28d9;
-=======
-}
->>>>>>> 412731761beff6ecf8e5ea21a2d3346872c578aa
 
