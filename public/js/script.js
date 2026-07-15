@@ -363,7 +363,7 @@ L.tileLayer(
     }
 ).addTo(map);
 
-<<<<<<< HEAD
+
 // =========================================
 // RED SOS ICON
 // =========================================
@@ -394,7 +394,8 @@ socket.on("networkStats",(stats)=>{
     statsLocations.innerHTML=stats.locations;
 
     statsSOS.innerHTML=stats.sos;
-=======
+
+});
 analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
@@ -562,6 +563,5 @@ ${medicalTeams}
 ${rescueTeams}
 
 `;
->>>>>>> dc1920a0232256fd3e9b59d85067d55be8052af4
 
 });
