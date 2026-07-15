@@ -53,6 +53,7 @@ document.getElementById(
 
 
 let username = "";
+let userLocations = {};
 
 let mediaRecorder = null;
 let audioChunks = [];
@@ -234,6 +235,26 @@ socket.on("emergencyAlert", (data) => {
 
     alertBox.classList.remove("hidden");
 
+    const location = userLocations[data.user];
+console.log("SOS received from:", data.user);
+console.log(userLocations);
+if(location){
+
+    L.circleMarker(
+        [location.latitude, location.longitude],
+        {
+            radius: 12,
+            color: "red",
+            fillColor: "red",
+            fillOpacity: 0.8
+        }
+    )
+    .addTo(map)
+    .bindPopup(
+        `🚨 SOS ALERT<br><b>${data.user}</b>`
+    );
+
+}
 });
 
 // Close Alert
@@ -280,6 +301,11 @@ socket.on("receiveLocation", (data) => {
         `Shared Location`
     );
 
+    userLocations[data.user] = {
+    latitude: data.latitude,
+    longitude: data.longitude
+};
+
     L.marker([data.latitude, data.longitude])
         .addTo(map)
         .bindPopup(`<b>${data.user}</b><br>Emergency Node`)
@@ -320,6 +346,12 @@ analyzeButton.addEventListener("click", function () {
     let priority = 5;
 
     let actions = [];
+
+    let ambulances = 0;
+
+    let medicalTeams = 0;
+
+    let rescueTeams = 0;
 
     if (
         text.includes("fire") ||
@@ -366,6 +398,17 @@ analyzeButton.addEventListener("click", function () {
             "Dispatch Ambulance",
             "Provide First Aid"
         );
+    
+        ambulances = Math.max(
+    1,
+    Math.ceil(affectedPeople / 5)
+);
+
+medicalTeams = Math.max(
+    1,
+    Math.ceil(affectedPeople / 10)
+);
+
     }
 
     if (
@@ -381,6 +424,12 @@ analyzeButton.addEventListener("click", function () {
             "Search For Survivors",
             "Deploy Rescue Team"
         );
+
+rescueTeams = Math.max(
+    1,
+    Math.ceil(affectedPeople / 8)
+);
+
     }
 
     if(affectedPeople >= 50){
@@ -434,6 +483,16 @@ ${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT" : ""}
 📋 Recommended Actions:
 
 ${[...new Set(actions)].join("\n")}
+
+🚑 Ambulances Needed:
+${ambulances}
+
+👨‍⚕️ Medical Teams:
+${medicalTeams}
+
+🚒 Rescue Teams:
+${rescueTeams}
+
 `;
 
 });
