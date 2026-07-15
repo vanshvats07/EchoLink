@@ -41,6 +41,22 @@ const alertBox = document.getElementById("alertBox");
 const alertMessage = document.getElementById("alertMessage");
 const closeAlert = document.getElementById("closeAlert");
 
+const analyzeButton =
+document.getElementById(
+"analyzeButton"
+);
+
+const emergencyInput =
+document.getElementById(
+"emergencyInput"
+);
+
+const analysisOutput =
+document.getElementById(
+"analysisOutput"
+);
+
+
 let username = "";
 
 let mediaRecorder = null;
@@ -321,6 +337,7 @@ L.tileLayer(
     }
 ).addTo(map);
 
+<<<<<<< HEAD
 // =========================================
 // RED SOS ICON
 // =========================================
@@ -351,5 +368,141 @@ socket.on("networkStats",(stats)=>{
     statsLocations.innerHTML=stats.locations;
 
     statsSOS.innerHTML=stats.sos;
+=======
+analyzeButton.addEventListener("click", function () {
+
+    const text = emergencyInput.value.toLowerCase();
+    const numbers = text.match(/\d+/g);
+
+    let affectedPeople = 0;
+
+    if(numbers){
+
+    affectedPeople = parseInt(numbers[0]);
+
+    }
+    let categories = [];
+
+    let severity = "LOW";
+
+    let priority = 5;
+
+    let actions = [];
+
+    if (
+        text.includes("fire") ||
+        text.includes("smoke") ||
+        text.includes("burn")
+    ) {
+
+        categories.push("FIRE");
+
+        priority += 2;
+
+        actions.push(
+            "Evacuate Area",
+            "Contact Fire Team"
+        );
+    }
+
+    if (
+        text.includes("flood") ||
+        text.includes("water")
+    ) {
+
+        categories.push("FLOOD");
+
+        priority += 2;
+
+        actions.push(
+            "Move To Higher Ground",
+            "Begin Evacuation"
+        );
+    }
+
+    if (
+        text.includes("injured") ||
+        text.includes("ambulance") ||
+        text.includes("medical")
+    ) {
+
+        categories.push("MEDICAL");
+
+        priority += 3;
+
+        actions.push(
+            "Dispatch Ambulance",
+            "Provide First Aid"
+        );
+    }
+
+    if (
+        text.includes("collapse") ||
+        text.includes("earthquake")
+    ) {
+
+        categories.push("COLLAPSE");
+
+        priority += 4;
+
+        actions.push(
+            "Search For Survivors",
+            "Deploy Rescue Team"
+        );
+    }
+
+    if(affectedPeople >= 50){
+
+    priority = 10;
+
+}
+else if(affectedPeople >= 20){
+
+    priority += 2;
+
+}
+else if(affectedPeople >= 10){
+
+    priority += 1;
+
+}
+
+    if (priority >= 9) {
+
+        severity = "HIGH";
+
+    }
+    else if (priority >= 7) {
+
+        severity = "MEDIUM";
+
+    }
+
+    if (categories.length === 0) {
+
+        categories.push("GENERAL");
+    }
+
+   analysisOutput.innerHTML = `
+
+👥 People Affected:
+${affectedPeople || "Unknown"}
+
+🚨 Categories:
+${categories.join(", ")}
+
+⚠️ Severity:
+${severity}
+
+⭐ Priority:
+${Math.min(priority,10)}/10
+
+${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT" : ""}
+
+📋 Recommended Actions:
+
+${[...new Set(actions)].join("\n")}
+`;
+>>>>>>> dc1920a0232256fd3e9b59d85067d55be8052af4
 
 });
