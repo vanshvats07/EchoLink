@@ -1,15 +1,14 @@
 /*
-=========================================
+
 EchoLink Client Script
-=========================================
+
 */
 
 const socket = io();
 
-// --------------------
-// HTML Elements
-// --------------------
 
+// HTML Elements
+// 
 const recordButton = document.getElementById("recordButton");
 
 const fileInput=document.getElementById("fileInput");
@@ -19,6 +18,10 @@ const timeline =
 document.getElementById("timeline");
 const statsMessages=document.getElementById("statsMessages");
 const statsLocations=document.getElementById("statsLocations");
+
+
+
+
 const statsSOS=document.getElementById("statsSOS");
 const locationButton = document.getElementById("locationButton");
 const joinButton = document.getElementById("joinButton");
@@ -38,6 +41,8 @@ const userCount = document.getElementById("userCount");
 
 const connectionStatus = document.getElementById("connectionStatus");
 const networkStatus = document.getElementById("networkStatus");
+
+
 
 const sosButton = document.getElementById("sosButton");
 
@@ -65,11 +70,15 @@ document.getElementById(
 let username = "";
 let userLocations = {};
 
+
+
 let mediaRecorder = null;
 let audioChunks = [];
 // Store my latest location
 let myLatitude = null;
 let myLongitude = null;
+
+
 function addTimelineEvent(event){
 
     const time =
@@ -87,9 +96,9 @@ function addTimelineEvent(event){
 
 }
 
-// =========================================
+
 // JOIN NETWORK
-// =========================================
+
 
 // Open Join Modal
 joinButton.addEventListener("click", () => {
@@ -107,6 +116,7 @@ connectButton.addEventListener("click", () => {
 
     joinModal.classList.add("hidden");
 
+
     landingPage.classList.add("hidden");
 
     dashboard.classList.remove("hidden");
@@ -114,13 +124,14 @@ connectButton.addEventListener("click", () => {
     socket.emit("join", username);
 
     addTimelineEvent(
+
     username + " joined network"
 );
 
 });
-// =========================================
+
 // SOCKET CONNECTION
-// =========================================
+
 
 // Connected
 socket.on("connect", () => {
@@ -136,6 +147,7 @@ socket.on("disconnect", () => {
     connectionStatus.innerHTML = "🔴 Disconnected";
     networkStatus.innerHTML = "🔴 Offline";
 
+
 });
 
 // Update Connected Users
@@ -143,8 +155,8 @@ socket.on("updateUsers", (users) => {
 
     userList.innerHTML = "";
 
-    users.forEach((user) => {
 
+    users.forEach((user) => {
         const div = document.createElement("div");
 
         div.className = "user";
@@ -158,9 +170,8 @@ socket.on("updateUsers", (users) => {
     userCount.innerHTML = users.length;
 
 });
-// =========================================
+
 // CHAT FUNCTIONS
-// =========================================
 
 // Send button
 sendButton.addEventListener("click", sendMessage);
@@ -169,6 +180,7 @@ sendButton.addEventListener("click", sendMessage);
 messageInput.addEventListener("keypress", (event) => {
 
     if (event.key === "Enter") {
+
         sendMessage();
     }
 
@@ -182,7 +194,11 @@ function sendMessage() {
     if (message === "") return;
 
     socket.emit("sendMessage", {
+
         user: username,
+
+
+
         message: message
     });
 
@@ -192,7 +208,6 @@ function sendMessage() {
 
 // Display Message
 function addMessage(user, message) {
-
     const div = document.createElement("div");
 
     const time = new Date().toLocaleTimeString([], {
@@ -205,7 +220,6 @@ function addMessage(user, message) {
     } else {
         div.className = "message other-message";
     }
-
     div.innerHTML = `
         <b>${user}</b><br>
         ${message}
@@ -215,12 +229,13 @@ function addMessage(user, message) {
 
     chatBox.appendChild(div);
 
+
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // Receive Message
-socket.on("receiveMessage", (data) => {
 
+socket.on("receiveMessage", (data) => {
     addMessage(data.user, data.message);
 
 });
@@ -233,19 +248,16 @@ socket.on("systemMessage", (message) => {
     div.className = "message system-message";
 
     div.innerHTML = message;
-
     chatBox.appendChild(div);
 
     chatBox.scrollTop = chatBox.scrollHeight;
 
 });
-// =========================================
+
 // SOS EMERGENCY
-// =========================================
 
 // Send SOS
 sosButton.addEventListener("click", () => {
-
     socket.emit("emergency", {
 
     user: username,
@@ -253,7 +265,6 @@ sosButton.addEventListener("click", () => {
     message: "🚨 NEED IMMEDIATE ASSISTANCE!",
 
     latitude: myLatitude,
-
     longitude: myLongitude
 
 });
@@ -262,7 +273,6 @@ sosButton.addEventListener("click", () => {
 
 // Receive SOS
 socket.on("emergencyAlert", (data) => {
-
     addTimelineEvent(
     "🚨 SOS from " + data.user
 );
@@ -271,6 +281,7 @@ socket.on("emergencyAlert", (data) => {
         <br>
         <b>${data.user}</b>
         <br><br>
+
         ${data.message}
     `;
 
@@ -281,6 +292,7 @@ socket.on("emergencyAlert", (data) => {
         [data.latitude,data.longitude],
         {icon:redIcon}
     )
+
     .addTo(map)
     .bindPopup(`
         <b>🚨 Emergency</b><br>
@@ -300,7 +312,6 @@ socket.on("emergencyAlert", (data) => {
 console.log("SOS received from:", data.user);
 console.log(userLocations);
 if(location){
-
     L.circleMarker(
         [location.latitude, location.longitude],
         {
@@ -317,15 +328,18 @@ if(location){
 
 }
 });
-
 // Close Alert
 closeAlert.addEventListener("click", () => {
 
     alertBox.classList.add("hidden");
 
-});// =========================================
+
+});
+
+
+
+
 // LOCATION SHARING
-// =========================================
 
 // Share location
 locationButton.addEventListener("click", () => {
@@ -336,19 +350,19 @@ locationButton.addEventListener("click", () => {
 
         return;
 
+
     }
 
    navigator.geolocation.getCurrentPosition((position) => {
 
     myLatitude = position.coords.latitude;
+
     myLongitude = position.coords.longitude;
 
     socket.emit("shareLocation", {
-
         user: username,
 
         latitude: myLatitude,
-
         longitude: myLongitude
 
     });
@@ -367,7 +381,6 @@ socket.on("receiveLocation", (data) => {
         "📍 " + data.user,
         `Shared Location`
     );
-
     userLocations[data.user] = {
     latitude: data.latitude,
     longitude: data.longitude
@@ -381,10 +394,8 @@ socket.on("receiveLocation", (data) => {
     map.setView([data.latitude, data.longitude], 15);
 
 });
-// =========================================
-// LEAFLET MAP
-// =========================================
 
+// LEAFLET MAP
 const map = L.map("map").setView([28.6139, 77.2090], 12);
 
 L.tileLayer(
@@ -395,10 +406,8 @@ L.tileLayer(
 ).addTo(map);
 
 
-// =========================================
-// RED SOS ICON
-// =========================================
 
+// RED SOS ICON
 const redIcon = new L.Icon({
 
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -414,18 +423,14 @@ const redIcon = new L.Icon({
     shadowSize: [41,41]
 
 });
-
-
 socket.on("networkStats",(stats)=>{
 
     statsUsers.innerHTML=stats.users;
 
     statsMessages.innerHTML=stats.messages;
-
     statsLocations.innerHTML=stats.locations;
 
     statsSOS.innerHTML=stats.sos;
-
 });
 analyzeButton.addEventListener("click", function () {
 
@@ -440,21 +445,17 @@ analyzeButton.addEventListener("click", function () {
 
     }
     let categories = [];
-
     let severity = "LOW";
-
     let priority = 5;
-
     let actions = [];
-
     let ambulances = 0;
-
     let medicalTeams = 0;
-
     let rescueTeams = 0;
 
     if (
         text.includes("fire") ||
+
+
         text.includes("smoke") ||
         text.includes("burn")
     ) {
@@ -468,22 +469,18 @@ analyzeButton.addEventListener("click", function () {
             "Contact Fire Team"
         );
     }
-
     if (
         text.includes("flood") ||
         text.includes("water")
     ) {
-
         categories.push("FLOOD");
 
         priority += 2;
-
         actions.push(
             "Move To Higher Ground",
             "Begin Evacuation"
         );
     }
-
     if (
         text.includes("injured") ||
         text.includes("ambulance") ||
@@ -491,7 +488,6 @@ analyzeButton.addEventListener("click", function () {
     ) {
 
         categories.push("MEDICAL");
-
         priority += 3;
 
         actions.push(
@@ -517,7 +513,6 @@ medicalTeams = Math.max(
     ) {
 
         categories.push("COLLAPSE");
-
         priority += 4;
 
         actions.push(
@@ -527,6 +522,7 @@ medicalTeams = Math.max(
 
 rescueTeams = Math.max(
     1,
+
     Math.ceil(affectedPeople / 8)
 );
 
@@ -543,11 +539,9 @@ else if(affectedPeople >= 20){
 
 }
 else if(affectedPeople >= 10){
-
     priority += 1;
 
 }
-
     if (priority >= 9) {
 
         severity = "HIGH";
@@ -560,6 +554,9 @@ else if(affectedPeople >= 10){
     }
 
     if (categories.length === 0) {
+
+
+
 
         categories.push("GENERAL");
     }
@@ -576,8 +573,11 @@ else if(affectedPeople >= 10){
 👥 PEOPLE AFFECTED
 ${affectedPeople || "Unknown"}
 
+
 🚨 INCIDENT TYPE
 ${categories.join(", ")}
+
+
 
 ⚠️ THREAT LEVEL
 ${severity}
@@ -591,8 +591,8 @@ ${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT DETECTED" : ""}
 📋 RECOMMENDED ACTIONS
 ═══════════════════════
 
-${[...new Set(actions)].join("\n")}
 
+${[...new Set(actions)].join("\n")}
 ═══════════════════════
 🚑 RESOURCE DEPLOYMENT
 ═══════════════════════
@@ -603,8 +603,11 @@ ${ambulances}
 👨‍⚕️ Medical Teams Required:
 ${medicalTeams}
 
+
 🚒 Rescue Teams Required:
 ${rescueTeams}
+
+
 
 ═══════════════════════
 🧠 AI ASSESSMENT
@@ -615,7 +618,6 @@ ${severity === "HIGH"
 : severity === "MEDIUM"
 ? "Rapid response advised. Situation may escalate."
 : "Monitor situation and maintain communication."}
-
 ═══════════════════════
 📡 Generated by EchoLink Offline AI
 ═══════════════════════
@@ -629,8 +631,9 @@ fileButton.addEventListener("click", () => {
 });
 fileInput.addEventListener("change", () => {
 
-    const file = fileInput.files[0];
 
+
+    const file = fileInput.files[0];
     if (!file) return;
 
     const reader = new FileReader();
@@ -641,11 +644,11 @@ fileInput.addEventListener("change", () => {
 
             user: username,
 
+
             fileName: file.name,
-
             fileType: file.type,
-
             fileData: reader.result
+
 
         });
 
@@ -655,19 +658,18 @@ fileInput.addEventListener("change", () => {
 
 });
 
-
 // =========================================
 // FILE SHARING
 // =========================================
 
 socket.on("receiveFile", (data) => {
-
     const div = document.createElement("div");
 
     div.className = "message";
 
-    if (data.fileType.startsWith("image")) {
 
+
+    if (data.fileType.startsWith("image")) {
         div.innerHTML = `
             <b>${data.user}</b><br>
             <img src="${data.fileData}" style="width:220px;border-radius:10px;">
@@ -684,16 +686,18 @@ socket.on("receiveFile", (data) => {
 
     }
 
+
+
+
     chatBox.appendChild(div);
 
     chatBox.scrollTop = chatBox.scrollHeight;
 
 });
 
-
-// =========================================
 // VOICE MESSAGE
-// =========================================
+
+
 
 recordButton.addEventListener("click", async () => {
 
@@ -705,16 +709,17 @@ recordButton.addEventListener("click", async () => {
         });
 
         audioChunks = [];
-
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.start();
 
-        recordButton.innerHTML = "⏹ Stop";
 
+
+        recordButton.innerHTML = "⏹ Stop";
         mediaRecorder.ondataavailable = (event) => {
 
             audioChunks.push(event.data);
+
 
         };
 
@@ -733,33 +738,32 @@ recordButton.addEventListener("click", async () => {
                     user: username,
 
                     audio: reader.result
-
                 });
 
             };
-
             reader.readAsDataURL(audioBlob);
+
+
 
         };
 
     }
-
     // Stop Recording
     else {
-
         mediaRecorder.stop();
 
         recordButton.innerHTML = "🎙️ Record";
-
     }
 
 });
 
+
 socket.on("voiceMessage", (data) => {
 
     const div = document.createElement("div");
-
     div.className = "message";
+
+
 
     div.innerHTML = `
         <b>${data.user}</b><br>
@@ -768,8 +772,9 @@ socket.on("voiceMessage", (data) => {
 
     chatBox.appendChild(div);
 
-    chatBox.scrollTop = chatBox.scrollHeight;
 
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 });
 
 

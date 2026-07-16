@@ -443,16 +443,6 @@ function(data){
 const PORT = 3000;
 
 
-server.listen(
-    PORT,
-    function(){
-
-
-        console.log(
-            `EchoLink server running on port ${PORT}`
-        );
-
-
-    }
-);
-
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+});
