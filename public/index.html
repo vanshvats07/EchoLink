@@ -3,17 +3,25 @@
 
 <head>
 
+
+
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>EchoLink | Emergency Communication Network</title>
+  
+
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+   
+   
+   
     <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -23,32 +31,31 @@
 </head>
 
 
+
+
 <body>
-
-
-    <!-- =========================
-         LANDING PAGE SECTION
-    ========================== -->
+         <!-- LANDING PAGE SECTION -->
+   
 
     <section id="landingPage">
+  
+
 
 
         <nav class="navbar">
-
             <div class="logo">
                 EchoLink
             </div>
-
-
             <div class="nav-status">
                 🟢 System Ready
             </div>
-
         </nav>
 
 
-
         <div class="hero">
+
+
+
 
 
             <div class="hero-text">
@@ -64,33 +71,31 @@
                 </h2>
 
 
+
+
+
+
                 <p>
                     A decentralized communication system designed
                     to reconnect people when traditional networks fail.
                 </p>
-
-
                 <button id="joinButton">
                     Join Network
                 </button>
-
-
             </div>
 
 
 
             <div class="hero-card">
-
-
                 <div class="signal">
-                    📡
                 </div>
+  
+
 
 
                 <h3>
                     Alien EMP Scenario
                 </h3>
-
 
                 <p>
                     Satellite communication disabled.
@@ -103,31 +108,35 @@
 
 
         </div>
+  
+
 
 
     </section>
+         <!-- MAIN DASHBOARD -->
+    
 
 
 
-
-
-    <!-- =========================
-         MAIN DASHBOARD
-    ========================== -->
 
     <section id="dashboard" class="hidden">
+
+
+
+
+
+
 
 
         <!-- HEADER -->
 
         <header class="dashboard-header">
-
-
             <div>
-
                 <h1>
                     EchoLink Network
                 </h1>
+  
+
 
                 <p>
                     Emergency Communication Dashboard
@@ -135,13 +144,16 @@
 
             </div>
 
-
-
             <div class="connection-box">
 
                 <span id="connectionStatus">
                     Connecting...
+
+
                 </span>
+
+
+
 
             </div>
 
@@ -149,24 +161,18 @@
         </header>
 
 
-
-
-
-
         <!-- MAIN GRID -->
 
         <main class="dashboard-container">
 
-
-
-
-
-            <!-- =========================
-                 USERS PANEL
-            ========================== -->
+                         <!-- USERS PANEL -->
+            
 
 
             <div class="panel users-panel">
+
+
+
 
 
                 <h2>
@@ -177,7 +183,7 @@
                 <div id="userList">
 
 
-                    <!-- Users will appear here dynamically -->
+                                 <!-- Users will appear here dynamically -->
 
 
                     <div class="user">
@@ -185,6 +191,9 @@
                         <span class="online">
                             🟢
                         </span>
+
+
+
 
                         Waiting for users...
 
@@ -194,7 +203,7 @@
                 </div>
 
 
-                <div class="network-count">
+                           <div class="network-count">
 
                     Connected Nodes:
                     <span id="userCount">
@@ -206,15 +215,9 @@
 
             </div>
 
-
-
-
-
-
-
-            <!-- =========================
-                 CHAT PANEL
-            ========================== -->
+            
+                 <!-- CHAT PANEL -->
+            
 
 
             <div class="panel chat-panel">
@@ -223,6 +226,8 @@
                 <h2>
                     Communication Hub
                 </h2>
+
+
 
 
 
@@ -235,6 +240,7 @@
                         Welcome to EchoLink Network
 
                     </div>
+
 
 
 
@@ -262,10 +268,6 @@
     </div>
 
 </div>
-
-
-
-
                <div class="message-input">
 
 
@@ -304,16 +306,9 @@
 
 
             </div>
-
-
-
-
-
-
-
-            <!-- =========================
-                 STATUS PANEL
-            ========================== -->
+            
+                 <!-- STATUS PANEL -->
+           
 
 
             <div class="panel status-panel">
@@ -326,10 +321,12 @@
 
 
 
+
+
                 <div class="status-card">
 
 
-                    <h3>
+                           <h3>
                         Connection
                     </h3>
 
@@ -401,17 +398,16 @@
         <div class="status-card">
 
     <h3>📊 Network Statistics</h3>
-
     <p>👥 Connected Nodes :
         <span id="statsUsers">0</span>
     </p>
-
     <p>💬 Messages :
         <span id="statsMessages">0</span>
     </p>
-
     <p>📍 Locations :
         <span id="statsLocations">0</span>
+
+
     </p>
 
     <p>🚨 SOS Alerts :
@@ -422,37 +418,18 @@
 
 </main>
 
-
-
-
-
-
-
-
-        <!-- =========================
-             EMERGENCY BUTTON
-        ========================== -->
+                 <!-- EMERGENCY BUTTON -->
 
 <section class="emergency-section">
 
 
 
     <button id="sosButton">
-
         🚨 Emergency Broadcast
-
     </button>
-
     <button id="locationButton">
     📍 Share Location
 </button>
-
-
-
-   
-
-
-
     <p>
 
         Send emergency alert or share your location
@@ -460,13 +437,9 @@
     </p>
 
 
+
+
 </section>
-
-
-
-
-
-
     </section>
 
 
@@ -475,20 +448,19 @@
 
 
 
-    <!-- =========================
-         EMERGENCY POPUP
-    ========================== -->
+    
+         <!-- EMERGENCY POPUP -->
+    
 
 <!-- JOIN NETWORK MODAL -->
 
 <div id="joinModal" class="hidden">
-
-
     <div class="join-box">
 
 
+
         <h2>
-            📡 Connect to EchoLink
+                    📡 Connect to EchoLink
         </h2>
 
 
@@ -506,6 +478,8 @@
 
 
 
+
+
         <button id="connectButton">
 
             Connect Network
@@ -519,6 +493,8 @@
 </div>
     <div id="alertBox" class="hidden">
 
+
+        
 
         <div class="alert-content">
 
