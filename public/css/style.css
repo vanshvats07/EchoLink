@@ -1,6 +1,4 @@
-/* ================================
-   GLOBAL SETTINGS
-================================ */
+   /* GLOBAL SETTINGS */
 
 
 * {
@@ -8,6 +6,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+
     font-family: "Segoe UI", sans-serif;
 
 }
@@ -16,7 +16,7 @@
 
 body {
 
-    background:
+ background:
 
 linear-gradient(
 135deg,
@@ -29,6 +29,7 @@ color:white;
 
 font-family:Arial,Helvetica,sans-serif;
     color: white;
+
     min-height: 100vh;
 
 }
@@ -42,18 +43,16 @@ font-family:Arial,Helvetica,sans-serif;
 }
 
 
+   /* LANDING PAGE */
 
-
-
-/* ================================
-   LANDING PAGE
-================================ */
 
 
 
 #landingPage {
 
     min-height: 100vh;
+
+
     background:
     radial-gradient(circle at top,
     #12304a,
@@ -73,6 +72,8 @@ font-family:Arial,Helvetica,sans-serif;
 
     display: flex;
     justify-content: space-between;
+
+
     align-items: center;
 
     padding: 25px 8%;
@@ -87,6 +88,7 @@ font-family:Arial,Helvetica,sans-serif;
 
     font-size: 32px;
     font-weight: bold;
+
 
     letter-spacing: 2px;
 
@@ -105,6 +107,7 @@ font-family:Arial,Helvetica,sans-serif;
 
     border-radius: 30px;
 
+
     background: rgba(0,234,255,0.1);
 
 }
@@ -119,12 +122,11 @@ font-family:Arial,Helvetica,sans-serif;
 
 
 .hero {
-
-
     width: 85%;
     margin: auto;
 
     display: flex;
+
 
     justify-content: space-between;
 
@@ -141,8 +143,6 @@ font-family:Arial,Helvetica,sans-serif;
 
 
 .hero-text {
-
-
     width: 55%;
 
 
@@ -151,13 +151,11 @@ font-family:Arial,Helvetica,sans-serif;
 
 
 .hero-text h1 {
-
-
     font-size: 80px;
 
-    color: #00eaff;
+ color: #00eaff;
 
-    text-shadow:
+      text-shadow:
     0 0 20px #00eaff;
 
 
@@ -168,7 +166,9 @@ font-family:Arial,Helvetica,sans-serif;
 .hero-text h2 {
 
 
-    font-size: 30px;
+
+        font-size: 30px;
+
 
     margin-bottom: 20px;
 
@@ -180,11 +180,12 @@ font-family:Arial,Helvetica,sans-serif;
 .hero-text p {
 
 
-    font-size: 18px;
+    font-size: 18px; 
 
-    line-height: 1.7;
 
-    color:#cbd5e1;
+       line-height: 1.7;
+
+color:#cbd5e1;
 
     margin-bottom: 35px;
 
@@ -226,9 +227,9 @@ button{
 
 button:hover{
 
-    transform:scale(1.05);
+   transform:scale(1.05);
 
-    box-shadow:0 0 18px cyan;
+       box-shadow:0 0 18px cyan;
 
 }
 
@@ -244,12 +245,11 @@ button:hover{
 
 .hero-card {
 
+        width:350px;
 
-    width:350px;
+padding:35px;
 
-    padding:35px;
-
-    border-radius:20px;
+     border-radius:20px;
 
 
     background:
@@ -270,31 +270,26 @@ button:hover{
 .hero-card h3 {
 
 
-    margin:20px 0;
+      margin:20px 0;
 
     color:#00eaff;
 
 
 }
 
-
-
 .hero-card p {
 
 
     line-height:1.6;
 
-    color:#cbd5e1;
-
+   color:#cbd5e1;
 
 }
 
 
 
 .signal {
-
-
-    font-size:70px;
+       font-size:70px;
 
     text-align:center;
 
@@ -303,22 +298,10 @@ button:hover{
 
 
 
-
-
-
-
-
-
-/* ================================
-   DASHBOARD
-================================ */
-
-
+   /* DASHBOARD */
 
 #dashboard {
-
-
-    min-height:100vh;
+       min-height:100vh;
 
     padding:30px 5%;
 
@@ -335,7 +318,7 @@ justify-content:space-between;
 
 align-items:center;
 
-margin-bottom:25px;
+  margin-bottom:25px;
 
 padding:20px;
 
@@ -352,7 +335,7 @@ border:1px solid rgba(255,255,255,.15);
 .dashboard-header h1 {
 
 
-    color:#00eaff;
+       color:#00eaff;
 
     font-size:40px;
 
@@ -364,7 +347,7 @@ border:1px solid rgba(255,255,255,.15);
 .dashboard-header p {
 
 
-    color:#94a3b8;
+color:#94a3b8;
 
 
 }
@@ -375,11 +358,11 @@ border:1px solid rgba(255,255,255,.15);
 .connection-box {
 
 
-    padding:15px 25px;
+         padding:15px 25px;
 
-    border-radius:30px;
+  border-radius:30px;
 
-    background:#052e16;
+      background:#052e16;
 
     border:1px solid #22c55e;
 
@@ -397,11 +380,9 @@ border:1px solid rgba(255,255,255,.15);
 
 
 .dashboard-container {
-
-
     display:grid;
 
-    grid-template-columns:
+      grid-template-columns:
 
     1fr 2fr 1fr;
 
@@ -414,16 +395,12 @@ border:1px solid rgba(255,255,255,.15);
 
 
 
-
-
-
-
 /* PANELS */
 
 
 .panel{
 
-    background:rgba(255,255,255,.08);
+       background:rgba(255,255,255,.08);
 
     backdrop-filter:blur(18px);
 
@@ -432,6 +409,8 @@ border:1px solid rgba(255,255,255,.15);
     border-radius:20px;
 
     padding:20px;
+ 
+
 
     transition:.3s;
 
@@ -442,7 +421,8 @@ border:1px solid rgba(255,255,255,.15);
 
     transform:translateY(-8px);
 
-    box-shadow:0 0 35px cyan;
+
+      box-shadow:0 0 35px cyan;
 
 }
 
@@ -452,13 +432,17 @@ border:1px solid rgba(255,255,255,.15);
 
     color:#00e5ff;
 
-    margin-bottom:20px;
+
+
+       margin-bottom:20px;
 
     border-bottom:2px solid rgba(0,229,255,.3);
 
     padding-bottom:12px;
 
     letter-spacing:1px;
+
+
 
 }
 
@@ -478,7 +462,7 @@ border:1px solid rgba(255,255,255,.15);
 
     padding:15px;
 
-    margin-bottom:10px;
+        margin-bottom:10px;
 
     background:
 
@@ -507,7 +491,7 @@ border:1px solid rgba(255,255,255,.15);
 .network-count {
 
 
-    margin-top:20px;
+ margin-top:20px;
 
     padding:15px;
 
@@ -532,7 +516,7 @@ border:1px solid rgba(255,255,255,.15);
 .chat-panel {
 
 
-    display:flex;
+       display:flex;
 
     flex-direction:column;
 
@@ -543,7 +527,6 @@ border:1px solid rgba(255,255,255,.15);
 
 
 #chatBox {
-
 
     flex:1;
 
@@ -563,7 +546,7 @@ padding:12px;
 
 margin-bottom:12px;
 
-border-radius:12px;
+    border-radius:12px;
 
 animation:fadeIn .4s;
 
@@ -574,7 +557,9 @@ animation:fadeIn .4s;
 
 .system-message{
 
-background:#065f46;
+
+
+   background:#065f46;
 
 text-align:center;
 
@@ -591,6 +576,8 @@ text-align:center;
 
     display:flex;
 
+    
+    
     gap:10px;
 
     margin-top:20px;
@@ -664,11 +651,8 @@ text-align:center;
 
 
 
+   /* SOS SECTION */
 
-
-/* ================================
-   SOS SECTION
-================================ */
 
 
 .emergency-section {
@@ -700,6 +684,8 @@ text-align:center;
 #sosButton:hover {
 
 
+
+
     box-shadow:
 
     0 0 30px red;
@@ -710,8 +696,6 @@ text-align:center;
 
 
 .emergency-section p {
-
-
     margin-top:15px;
 
     color:#94a3b8;
@@ -727,13 +711,12 @@ text-align:center;
 
 
 
-/* ================================
-   ALERT POPUP
-================================ */
+
+   /* ALERT POPUP */
+
 
 
 #alertBox {
-
 
     position:fixed;
 
@@ -767,11 +750,15 @@ text-align:center;
 .alert-content {
 
 
+
     background:#111827;
 
     padding:40px;
 
-    border-radius:20px;
+    
+    
+    
+      border-radius:20px;
 
     text-align:center;
 
@@ -799,7 +786,7 @@ text-align:center;
 .alert-content p {
 
 
-    margin-bottom:25px;
+ margin-bottom:25px;
 
 }
 
@@ -811,9 +798,9 @@ text-align:center;
 
 
 
-/* ================================
-   RESPONSIVE DESIGN
-================================ */
+
+   /* RESPONSIVE DESIGN */
+
 
 
 
@@ -823,7 +810,8 @@ text-align:center;
 .hero {
 
 
-    flex-direction:column;
+       flex-direction:column;
+
 
 
 }
@@ -863,6 +851,8 @@ text-align:center;
     font-size:50px;
 
 
+
+
 }
 
 
@@ -880,9 +870,9 @@ text-align:center;
 
 
 }
-/* ================================
-   JOIN MODAL
-================================ */
+
+   /* JOIN MODAL */
+
 
 
 #joinModal {
@@ -918,7 +908,7 @@ text-align:center;
 .join-box {
 
 
-    width:380px;
+        width:380px;
 
 
     padding:40px;
@@ -998,7 +988,7 @@ text-align:center;
     margin-bottom:20px;
 
 
-    font-size:16px;
+       font-size:16px;
 
 
 }
@@ -1017,7 +1007,7 @@ margin-left:25%;
 
 .other-message{
 
-background:#1f2937;
+   background:#1f2937;
 
 margin-right:25%;
 
@@ -1069,9 +1059,8 @@ margin-right:25%;
     0 0 20px #9333ea;
 
 }
-/* ================================
-   NETWORK MAP
-================================ */
+   /* NETWORK MAP */
+
 
 #map{
 
@@ -1088,9 +1077,9 @@ margin-right:25%;
 }
 
  
-/* ==============================
-NETWORK STATISTICS
-============================== */
+
+/* NETWORK STATISTICS */
+
 
 .status-card p{
 
@@ -1156,9 +1145,9 @@ opacity:.5;
 }
 
 }
-/* ===========================
+
 MESSAGE INPUT
-=========================== */
+
 
 #messageInput{
 
