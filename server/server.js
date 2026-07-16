@@ -1,449 +1,195 @@
-/*
-    EchoLink Server
-
-    Handles:
-    - User connections
-    - Live user list
-    - Real-time chat
-    - Emergency broadcasts
-
-*/
-
-
-// Import required packages
 
 const express = require("express");
 
 const http = require("http");
+     const { Server } = require("socket.io");
+       const path = require("path");
 
-const { Server } = require("socket.io");
-
-const path = require("path");
-
-
-
-
-// Create Express app
-
-const app = express();
-
-
-
-
-// Create HTTP server
-
+        const app = express();
 const server = http.createServer(app);
 
-
-
-
-// Create Socket.IO server
-
-const io = new Server(server, {
-
-    maxHttpBufferSize: 1e8
-
+        const io = new Server(server, {
+       maxHttpBufferSize: 1e8
 });
 
+app.use(express.static(path.join(__dirname, "../public")));
 
 
+         var users = {};
+var totalMessages = 0;
+             var totalSOS = 0;
 
+var totalLocations = 0;
 
+io.on("connection", function (socket)
+ {
 
-// Store connected users
+    console.log("New device connected:", socket.id);
 
-let users = {};
+    var currentUser = "";
 
-let totalMessages=0;
+   
+ socket.on("join", function (username)
+ {
 
-let totalSOS=0;
+        currentUser = username;
+        users[socket.id] = username;
 
-let totalLocations=0;
+    console.log(username + " joined EchoLink");
+       var userList = [];
 
+     for (var id in users) {
+            userList.push(users[id]);
+        }
 
+     io.emit("updateUsers", userList);
 
-
-
-
-
-// Serve frontend files
-
-app.use(
-    express.static(
-        path.join(__dirname, "../public")
-    )
-);
-
-
-
-
-
-
-
-
-// SOCKET CONNECTION
-
-
-
-io.on(
-    "connection",
-    function(socket){
-
-
-        console.log(
-            "New device connected:",
-            socket.id
-        );
-        socket.on("sendFile",(data)=>{
-
-    io.emit("receiveFile",data);
-
+      io.emit("networkStats", {
+           
+ users: userList.length,
+            messages: totalMessages,
+            locations: totalLocations,
+            sos: totalSOS
+        
 });
-
-
-
-        let currentUser = "";
-
-
-
-
-
-
 
        
-        // USER JOIN NETWORK
-       
-
-
-
-
-        socket.on(
-            "join",
-            function(username){
-
-
-
-                currentUser = username;
-
-
-
-                users[socket.id] = username;
-
-
-
-                console.log(
-                    username,
-                    "joined EchoLink"
-                );
-
-
-
-
-                // Send updated users
-io.emit(
-    "updateUsers",
-    Object.values(users)
-);
-
-io.emit("networkStats",{
-
-    users:Object.keys(users).length,
-
-    messages:totalMessages,
-
-    locations:totalLocations,
-
-    sos:totalSOS
-
-});
-
-io.emit("networkStats",{
-
-    users:Object.keys(users).length,
-
-    messages:totalMessages,
-
-    locations:totalLocations,
-
-    sos:totalSOS
-
-});
-
-
-
-
-
-                // Notify everyone
-
-                io.emit(
-                    "systemMessage",
-                    `
-                    🟢 ${username}
-                    joined the network
-                    `
-                );
-
-
-
-            }
-        );
-
-
-
-
-
-
-
-
-
-
-        
-        // CHAT MESSAGE
-       
-
-
-        socket.on(
-            "sendMessage",
-            function(data){
-
-
-
-                console.log(
-                    data.user,
-                    ":",
-                    data.message
-                );
-                
-
-                totalMessages++;
-
-                io.emit("networkStats",{
-
-                    users:Object.keys(users).length,
-
-                    messages:totalMessages,
-
-                    locations:totalLocations,
-
-                    sos:totalSOS
-
-                });
-
-
-                io.emit(
-                    "receiveMessage",
-                    data
-                );
-
-
-
-            }
-        );
-
-
-
-
-
-
-
-
-
-        
-        // EMERGENCY ALERT
-        
-
-
-        socket.on(
-            "emergency",
-            function(data){
-
-
-
-                console.log(
-                    "SOS ALERT:",
-                    data.user
-                );
-
-
-                totalSOS++;
-
-            io.emit("networkStats",{
-
-               users:Object.keys(users).length,
-
-                messages:totalMessages,
-
-                locations:totalLocations,
-
-                sos:totalSOS
-
-                });
-
-
-                io.emit(
-                    "emergencyAlert",
-                    data
-                );
-
-
-
-            }
-        );
-
-
-
-
-
-// LOCATION SHARING
-
-
-
-socket.on(
-"shareLocation",
-function(data){
-
-
-
-    console.log(
-        "Location received:",
-        data
-    );
-
-    totalLocations++;
-
-    io.emit("networkStats",{
-
-    users:Object.keys(users).length,
-
-    messages:totalMessages,
-
-    locations:totalLocations,
-
-    sos:totalSOS
-
-    });
-
-    io.emit(
-        "receiveLocation",
-        data
-    );
-
-
-});
-
-// VOICE MESSAGE
-
-
-
-socket.on(
-"voiceMessage",
-function(data){
-
-
-
-    io.emit(
-        "voiceMessage",
-        data
-    );
-
-
-});
-
-// SOS EMERGENCY
-
-
-
-
-
-// LOCATION SHARING
-
-
-
-
-      
-        // USER DISCONNECT
-        
-
-        socket.on(
-            "disconnect",
-            function(){
-
-
-
-                console.log(
-                    currentUser,
-                    "left"
-                );
-
-
-
-                if(currentUser){
-
-
-                    if (users[socket.id]) {
-
-    delete users[socket.id];
-
-    io.emit(
-        "updateUsers",
-        Object.values(users)
-    );
-
-    io.emit(
-        "systemMessage",
-        `🔴 ${currentUser} left the network`
-    );
-
-};
-
-
-
-                    io.emit(
-                        "updateUsers",
-                        users
-                    );
-
-
-
-                    io.emit(
-                        "systemMessage",
-                        `
-                        🔴 ${currentUser}
-                        left the network
-                        `
-                    );
-
-
-                }
-
-
-
-            }
-        );
-
-
-
-
+ io.emit("systemMessage", "🟢 " + username + " joined the network");
 
     }
 );
 
 
+    socket.on("sendMessage", function (msg) {
+
+        console.log(msg.user + ": " + msg.message);
+
+        totalMessages++;
+
+        io.emit("receiveMessage", msg);
+
+       
+ io.emit("networkStats",
+ {
+        
+    users: Object.keys(users).length,
+            messages: totalMessages,
+            locations: totalLocations,
+           
+ sos: totalSOS
+        
+}
+);
+
+    }
+);
 
 
+    socket.on("emergency", function (info) 
+{
 
+         console.log("SOS ALERT:", info.user);
 
+          totalSOS++;
+  
+        io.emit("emergencyAlert", info);
 
+            io.emit("networkStats",
+ {
+            users: Object.keys(users).length,
+          messages: totalMessages,
+      locations: totalLocations,
+            sos: totalSOS
+        }
+);
 
-
-
-// START SERVER
-
-
-
-const PORT = 3000;
-
-
-server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+    
 });
+
+
+    socket.on("shareLocation", function (location)
+ {
+
+      
+  console.log("Location received");
+
+            totalLocations++;
+
+      
+  io.emit("receiveLocation", location);
+
+        
+io.emit("networkStats",     {
+       
+     
+users: Object.keys(users).length,
+         
+   messages: totalMessages,
+          
+  locations: totalLocations,
+            sos: totalSOS
+        }
+);
+
+    }
+);
+
+
+    socket.on("voiceMessage", function (voice) 
+{
+
+        io.emit("voiceMessage", voice);
+
+    });
+
+
+    socket.on("sendFile", function (file) 
+{
+
+        io.emit("receiveFile", file);
+
+    });
+
+
+    socket.on("disconnect", function () 
+{
+
+          console.log(currentUser + " left");
+
+        if (users[socket.id]) {
+
+            delete users[socket.id];
+
+        var list = [];
+
+       for (var id in users) {
+                    list.push(users[id]);
+             }
+
+       io.emit("updateUsers", list);
+
+            io.emit("networkStats", {
+                   users: list.length,
+                    messages: totalMessages,
+                     locations: totalLocations,
+                   sos: totalSOS
+         });
+
+                io.emit("systemMessage", "🔴 " + currentUser + " left the network");
+
+          }
+
+              }
+);
+
+}
+);
+
+var PORT = 3000;
+
+              server.listen(PORT, function () {
+
+    console.log("EchoLink server running on port " + PORT);
+
+} 
+);

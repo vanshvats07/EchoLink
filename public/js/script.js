@@ -1,29 +1,21 @@
-/*
 
-EchoLink Client Script
-
-*/
 
 const socket = io();
 
-
-// HTML Elements
-// 
 const recordButton = document.getElementById("recordButton");
 
-const fileInput=document.getElementById("fileInput");
-const fileButton=document.getElementById("fileButton");
-const statsUsers=document.getElementById("statsUsers");
-const timeline =
-document.getElementById("timeline");
-const statsMessages=document.getElementById("statsMessages");
-const statsLocations=document.getElementById("statsLocations");
+const fileInput = document.getElementById("fileInput");
+const fileButton = document.getElementById("fileButton");
 
+const statsUsers = document.getElementById("statsUsers");
+const statsMessages = document.getElementById("statsMessages");
+const statsLocations = document.getElementById("statsLocations");
+const statsSOS = document.getElementById("statsSOS");
 
+const timeline = document.getElementById("timeline");
 
-
-const statsSOS=document.getElementById("statsSOS");
 const locationButton = document.getElementById("locationButton");
+
 const joinButton = document.getElementById("joinButton");
 const landingPage = document.getElementById("landingPage");
 const dashboard = document.getElementById("dashboard");
@@ -39,83 +31,69 @@ const sendButton = document.getElementById("sendButton");
 const userList = document.getElementById("userList");
 const userCount = document.getElementById("userCount");
 
-const connectionStatus = document.getElementById("connectionStatus");
-const networkStatus = document.getElementById("networkStatus");
+const connectionStatus =
+document.getElementById("connectionStatus");
 
+const networkStatus =
+document.getElementById("networkStatus");
 
+const sosButton =
+document.getElementById("sosButton");
 
-const sosButton = document.getElementById("sosButton");
+const alertBox =
+document.getElementById("alertBox");
 
+const alertMessage =
+document.getElementById("alertMessage");
 
-const alertBox = document.getElementById("alertBox");
-const alertMessage = document.getElementById("alertMessage");
-const closeAlert = document.getElementById("closeAlert");
+const closeAlert =
+document.getElementById("closeAlert");
 
 const analyzeButton =
-document.getElementById(
-"analyzeButton"
-);
+document.getElementById("analyzeButton");
 
 const emergencyInput =
-document.getElementById(
-"emergencyInput"
-);
+document.getElementById("emergencyInput");
 
 const analysisOutput =
-document.getElementById(
-"analysisOutput"
-);
-
+document.getElementById("analysisOutput");
 
 let username = "";
+
 let userLocations = {};
 
-
-
 let mediaRecorder = null;
+
 let audioChunks = [];
-// Store my latest location
+
 let myLatitude = null;
-let myLongitude = null;
 
+let myLongitude = null;function addTimelineEvent(text) {
 
-function addTimelineEvent(event){
+    const time = new Date().toLocaleTimeString();
 
-    const time =
-    new Date().toLocaleTimeString();
+    const item = document.createElement("div");
 
-    timeline.innerHTML =
+    item.textContent =
+    "[" + time + "] " + text;
 
-    "[" + time + "] " +
+    timeline.prepend(item);
 
-    event +
+}joinButton.addEventListener("click", function () {
 
-    "<br>" +
-
-    timeline.innerHTML;
-
-}
-
-
-// JOIN NETWORK
-
-
-// Open Join Modal
-joinButton.addEventListener("click", () => {
     joinModal.classList.remove("hidden");
-});
 
-// Connect to Network
-connectButton.addEventListener("click", () => {
+});connectButton.addEventListener("click", function () {
 
     username = usernameInput.value.trim();
 
-    if (username === "") {
+    if (username == "") {
+
         username = "Anonymous";
+
     }
 
     joinModal.classList.add("hidden");
-
 
     landingPage.classList.add("hidden");
 
@@ -124,517 +102,612 @@ connectButton.addEventListener("click", () => {
     socket.emit("join", username);
 
     addTimelineEvent(
+        username + " joined network"
+    );
 
-    username + " joined network"
-);
+});socket.on("connect", function () {
 
-});
+    connectionStatus.textContent =
+    "🟢 Connected";
 
-// SOCKET CONNECTION
+    networkStatus.textContent =
+    "🟢 Online";
 
+});socket.on("disconnect", function () {
 
-// Connected
-socket.on("connect", () => {
+    connectionStatus.textContent =
+    "🔴 Disconnected";
 
-    connectionStatus.innerHTML = "🟢 Connected";
-    networkStatus.innerHTML = "🟢 Online";
+    networkStatus.textContent =
+    "🔴 Offline";
 
-});
-
-// Disconnected
-socket.on("disconnect", () => {
-
-    connectionStatus.innerHTML = "🔴 Disconnected";
-    networkStatus.innerHTML = "🔴 Offline";
-
-
-});
-
-// Update Connected Users
-socket.on("updateUsers", (users) => {
+});socket.on("updateUsers", function (users) {
 
     userList.innerHTML = "";
 
+    for (let i = 0; i < users.length; i++) {
 
-    users.forEach((user) => {
-        const div = document.createElement("div");
+        const item = document.createElement("div");
 
-        div.className = "user";
+        item.classList.add("user");
 
-        div.innerHTML = "🟢 " + user;
+        item.textContent = "🟢 " + users[i];
 
-        userList.appendChild(div);
+        userList.appendChild(item);
 
-    });
+    }
 
-    userCount.innerHTML = users.length;
+    userCount.textContent = users.length;
 
-});
+});sendButton.addEventListener("click", sendMessage);
 
-// CHAT FUNCTIONS
+messageInput.addEventListener("keypress", function (event) {
 
-// Send button
-sendButton.addEventListener("click", sendMessage);
-
-// Press Enter to send
-messageInput.addEventListener("keypress", (event) => {
-
-    if (event.key === "Enter") {
+    if (event.key == "Enter") {
 
         sendMessage();
+
     }
 
 });
 
-// Send Message Function
+
 function sendMessage() {
 
-    const message = messageInput.value.trim();
+    let message = messageInput.value.trim();
 
-    if (message === "") return;
+    if (message == "") {
+
+        return;
+
+    }
 
     socket.emit("sendMessage", {
 
         user: username,
 
-
-
         message: message
+
     });
 
     messageInput.value = "";
 
-}
+}function addMessage(user, message) {
 
-// Display Message
-function addMessage(user, message) {
-    const div = document.createElement("div");
+    const box = document.createElement("div");
 
-    const time = new Date().toLocaleTimeString([], {
+    if (user == username) {
+
+        box.classList.add("message");
+        box.classList.add("my-message");
+
+    }
+    else {
+
+        box.classList.add("message");
+        box.classList.add("other-message");
+
+    }
+
+    const name = document.createElement("b");
+    name.textContent = user;
+
+    const br1 = document.createElement("br");
+
+    const text = document.createTextNode(message);
+
+    const br2 = document.createElement("br");
+
+    const time = document.createElement("small");
+
+    time.textContent =
+    new Date().toLocaleTimeString([], {
+
         hour: "2-digit",
+
         minute: "2-digit"
+
     });
 
-    if (user === username) {
-        div.className = "message my-message";
-    } else {
-        div.className = "message other-message";
-    }
-    div.innerHTML = `
-        <b>${user}</b><br>
-        ${message}
-        <br>
-        <small>${time}</small>
-    `;
+    box.appendChild(name);
 
-    chatBox.appendChild(div);
+    box.appendChild(br1);
 
+    box.appendChild(text);
 
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+    box.appendChild(br2);
 
-// Receive Message
+    box.appendChild(time);
 
-socket.on("receiveMessage", (data) => {
-    addMessage(data.user, data.message);
+    chatBox.appendChild(box);
 
-});
+    chatBox.scrollTop =
+    chatBox.scrollHeight;
 
-// Join / Leave Notifications
-socket.on("systemMessage", (message) => {
+}socket.on("receiveMessage", function (data) {
 
-    const div = document.createElement("div");
+    addMessage(
 
-    div.className = "message system-message";
+        data.user,
 
-    div.innerHTML = message;
-    chatBox.appendChild(div);
+        data.message
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    );
 
-});
+});socket.on("systemMessage", function (message) {
 
-// SOS EMERGENCY
+    const box = document.createElement("div");
 
-// Send SOS
-sosButton.addEventListener("click", () => {
+    box.classList.add("message");
+
+    box.classList.add("system-message");
+
+    box.textContent = message;
+
+    chatBox.appendChild(box);
+
+    chatBox.scrollTop =
+    chatBox.scrollHeight;
+
+});sosButton.addEventListener("click", function () {
+
     socket.emit("emergency", {
 
-    user: username,
-
-    message: "🚨 NEED IMMEDIATE ASSISTANCE!",
-
-    latitude: myLatitude,
-    longitude: myLongitude
-
-});
-
-});
-
-// Receive SOS
-socket.on("emergencyAlert", (data) => {
-    addTimelineEvent(
-    "🚨 SOS from " + data.user
-);
-    alertMessage.innerHTML = `
-        <h3>🚨 Emergency Alert</h3>
-        <br>
-        <b>${data.user}</b>
-        <br><br>
-
-        ${data.message}
-    `;
-
-    alertBox.classList.remove("hidden");
-    if(data.latitude && data.longitude){
-
-    L.marker(
-        [data.latitude,data.longitude],
-        {icon:redIcon}
-    )
-
-    .addTo(map)
-    .bindPopup(`
-        <b>🚨 Emergency</b><br>
-        ${data.user}<br>
-        Needs Immediate Assistance
-    `)
-    .openPopup();
-
-    map.setView(
-        [data.latitude,data.longitude],
-        15
-    );
-
-}
-
-    const location = userLocations[data.user];
-console.log("SOS received from:", data.user);
-console.log(userLocations);
-if(location){
-    L.circleMarker(
-        [location.latitude, location.longitude],
-        {
-            radius: 12,
-            color: "red",
-            fillColor: "red",
-            fillOpacity: 0.8
-        }
-    )
-    .addTo(map)
-    .bindPopup(
-        `🚨 SOS ALERT<br><b>${data.user}</b>`
-    );
-
-}
-});
-// Close Alert
-closeAlert.addEventListener("click", () => {
-
-    alertBox.classList.add("hidden");
-
-
-});
-
-
-
-
-// LOCATION SHARING
-
-// Share location
-locationButton.addEventListener("click", () => {
-
-    if (!navigator.geolocation) {
-
-        alert("Geolocation is not supported.");
-
-        return;
-
-
-    }
-
-   navigator.geolocation.getCurrentPosition((position) => {
-
-    myLatitude = position.coords.latitude;
-
-    myLongitude = position.coords.longitude;
-
-    socket.emit("shareLocation", {
         user: username,
 
+        message: "🚨 NEED IMMEDIATE ASSISTANCE!",
+
         latitude: myLatitude,
+
         longitude: myLongitude
 
     });
 
-});
-
-});
-
-// Receive location
-socket.on("receiveLocation", (data) => {
+});socket.on("emergencyAlert", function (data) {
 
     addTimelineEvent(
-    data.user + " shared location"
-);
-    addMessage(
-        "📍 " + data.user,
-        `Shared Location`
+        "🚨 SOS from " + data.user
     );
-    userLocations[data.user] = {
-    latitude: data.latitude,
-    longitude: data.longitude
-};
 
-    L.marker([data.latitude, data.longitude])
+    alertMessage.textContent =
+        "🚨 Emergency Alert\n\n" +
+        data.user +
+        "\n\n" +
+        data.message;
+
+    alertBox.classList.remove("hidden");
+
+    if (data.latitude && data.longitude) {
+
+        L.marker(
+            [data.latitude, data.longitude],
+            { icon: redIcon }
+        )
         .addTo(map)
-        .bindPopup(`<b>${data.user}</b><br>Emergency Node`)
+        .bindPopup("Emergency : " + data.user)
         .openPopup();
 
-    map.setView([data.latitude, data.longitude], 15);
+        map.setView(
+            [data.latitude, data.longitude],
+            15
+        );
 
-});
+    }
 
-// LEAFLET MAP
-const map = L.map("map").setView([28.6139, 77.2090], 12);
+    var location = userLocations[data.user];
+
+    console.log("SOS received from:", data.user);
+
+    if (location) {
+
+        L.circleMarker(
+            [location.latitude, location.longitude],
+            {
+
+                radius: 12,
+
+                color: "red",
+
+                fillColor: "red",
+
+                fillOpacity: 0.8
+
+            }
+
+        )
+        .addTo(map)
+        .bindPopup("SOS : " + data.user);
+
+    }
+
+});closeAlert.addEventListener("click", function () {
+
+    alertBox.classList.add("hidden");
+
+});locationButton.addEventListener("click", function () {
+
+    if (!navigator.geolocation) {
+
+        alert("Geolocation not supported");
+
+        return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(function (position) {
+
+        myLatitude = position.coords.latitude;
+
+        myLongitude = position.coords.longitude;
+
+        socket.emit("shareLocation", {
+
+            user: username,
+
+            latitude: myLatitude,
+
+            longitude: myLongitude
+
+        });
+
+    });
+
+});socket.on("receiveLocation", function (data) {
+
+    addTimelineEvent(
+        data.user + " shared location"
+    );
+
+    addMessage(
+        "📍 " + data.user,
+        "Shared Location"
+    );
+
+    userLocations[data.user] = {
+
+        latitude: data.latitude,
+
+        longitude: data.longitude
+
+    };
+
+    L.marker([
+
+        data.latitude,
+
+        data.longitude
+
+    ])
+
+    .addTo(map)
+
+    .bindPopup(data.user)
+
+    .openPopup();
+
+    map.setView(
+
+        [data.latitude, data.longitude],
+
+        15
+
+    );
+
+});const map = L.map("map").setView(
+
+    [28.6139, 77.2090],
+
+    12
+
+);
 
 L.tileLayer(
+
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
     {
+
         attribution: "&copy; OpenStreetMap"
+
     }
-).addTo(map);
 
+).addTo(map);const redIcon = new L.Icon({
 
+    iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
 
-// RED SOS ICON
-const redIcon = new L.Icon({
+    shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+    iconSize: [25, 41],
 
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+    iconAnchor: [12, 41],
 
-    iconSize: [25,41],
+    popupAnchor: [1, -34],
 
-    iconAnchor: [12,41],
+    shadowSize: [41, 41]
 
-    popupAnchor: [1,-34],
+});socket.on("networkStats", function (stats) {
 
-    shadowSize: [41,41]
+    statsUsers.textContent = stats.users;
 
-});
-socket.on("networkStats",(stats)=>{
+    statsMessages.textContent = stats.messages;
 
-    statsUsers.innerHTML=stats.users;
+    statsLocations.textContent = stats.locations;
 
-    statsMessages.innerHTML=stats.messages;
-    statsLocations.innerHTML=stats.locations;
+    statsSOS.textContent = stats.sos;
 
-    statsSOS.innerHTML=stats.sos;
-});
-analyzeButton.addEventListener("click", function () {
+});analyzeButton.addEventListener("click", function () {
 
     const text = emergencyInput.value.toLowerCase();
+
+    const report = analyzeIncident(text);
+
+    analysisOutput.innerHTML = makeReport(report);
+
+    addTimelineEvent("AI Analysis Completed");
+
+});function analyzeIncident(text) {
+
+    let people = 0;
+
     const numbers = text.match(/\d+/g);
 
-    let affectedPeople = 0;
+    if (numbers) {
 
-    if(numbers){
-
-    affectedPeople = parseInt(numbers[0]);
+        people = parseInt(numbers[0]);
 
     }
-    let categories = [];
-    let severity = "LOW";
+
+    let category = [];
+
+    let action = [];
+
     let priority = 5;
-    let actions = [];
+
     let ambulances = 0;
-    let medicalTeams = 0;
-    let rescueTeams = 0;
 
-    if (
+    let medical = 0;
+
+    let rescue = 0;    if (
         text.includes("fire") ||
-
-
         text.includes("smoke") ||
         text.includes("burn")
     ) {
 
-        categories.push("FIRE");
+        category.push("FIRE");
 
         priority += 2;
 
-        actions.push(
-            "Evacuate Area",
-            "Contact Fire Team"
-        );
-    }
-    if (
+        action.push("Evacuate Area");
+
+        action.push("Contact Fire Team");
+
+    }    if (
         text.includes("flood") ||
         text.includes("water")
     ) {
-        categories.push("FLOOD");
+
+        category.push("FLOOD");
 
         priority += 2;
-        actions.push(
-            "Move To Higher Ground",
-            "Begin Evacuation"
-        );
-    }
-    if (
+
+        action.push("Move To Higher Ground");
+
+        action.push("Begin Evacuation");
+
+    }    if (
         text.includes("injured") ||
         text.includes("ambulance") ||
         text.includes("medical")
     ) {
 
-        categories.push("MEDICAL");
+        category.push("MEDICAL");
+
         priority += 3;
 
-        actions.push(
-            "Dispatch Ambulance",
-            "Provide First Aid"
-        );
-    
+        action.push("Dispatch Ambulance");
+
+        action.push("Provide First Aid");
+
         ambulances = Math.max(
-    1,
-    Math.ceil(affectedPeople / 5)
-);
+            1,
+            Math.ceil(people / 5)
+        );
 
-medicalTeams = Math.max(
-    1,
-    Math.ceil(affectedPeople / 10)
-);
+        medical = Math.max(
+            1,
+            Math.ceil(people / 10)
+        );
 
-    }
-
-    if (
+    }    if (
         text.includes("collapse") ||
         text.includes("earthquake")
     ) {
 
-        categories.push("COLLAPSE");
+        category.push("COLLAPSE");
+
         priority += 4;
 
-        actions.push(
-            "Search For Survivors",
-            "Deploy Rescue Team"
+        action.push("Search For Survivors");
+
+        action.push("Deploy Rescue Team");
+
+        rescue = Math.max(
+            1,
+            Math.ceil(people / 8)
         );
 
-rescueTeams = Math.max(
-    1,
+    }    return {
 
-    Math.ceil(affectedPeople / 8)
-);
+        people: people,
+
+        category: category,
+
+        action: action,
+
+        priority: priority,
+
+        ambulances: ambulances,
+
+        medical: medical,
+
+        rescue: rescue
+
+    };
+
+}function makeReport(data) {
+
+    let priority = data.priority;
+
+    if (data.people >= 50) {
+
+        priority = 10;
+
+    }
+    else if (data.people >= 20) {
+
+        priority += 2;
+
+    }
+    else if (data.people >= 10) {
+
+        priority += 1;
 
     }
 
-    if(affectedPeople >= 50){
+    let level = "LOW";
 
-    priority = 10;
-
-}
-else if(affectedPeople >= 20){
-
-    priority += 2;
-
-}
-else if(affectedPeople >= 10){
-    priority += 1;
-
-}
     if (priority >= 9) {
 
-        severity = "HIGH";
+        level = "HIGH";
 
     }
     else if (priority >= 7) {
 
-        severity = "MEDIUM";
+        level = "MEDIUM";
 
     }
 
-    if (categories.length === 0) {
+    if (data.category.length == 0) {
 
+        data.category.push("GENERAL");
 
-
-
-        categories.push("GENERAL");
     }
 
-    addTimelineEvent(
-    "AI Analysis Completed"
-);
-   analysisOutput.innerHTML = `
+    let uniqueActions = [];
 
-═══════════════════════
-🚨 ECHOLINK AI INCIDENT REPORT
-═══════════════════════
+    for (let i = 0; i < data.action.length; i++) {
 
-👥 PEOPLE AFFECTED
-${affectedPeople || "Unknown"}
+        if (!uniqueActions.includes(data.action[i])) {
 
+            uniqueActions.push(data.action[i]);
 
-🚨 INCIDENT TYPE
-${categories.join(", ")}
+        }
 
+    }
 
+    let assessment = "";
 
-⚠️ THREAT LEVEL
-${severity}
+    if (level == "HIGH") {
 
-⭐ PRIORITY SCORE
-${Math.min(priority,10)}/10
+        assessment =
+        "Immediate multi-agency response recommended.";
 
-${affectedPeople >= 50 ? "🚨 CRITICAL MASS CASUALTY EVENT DETECTED" : ""}
+    }
+    else if (level == "MEDIUM") {
 
-═══════════════════════
-📋 RECOMMENDED ACTIONS
-═══════════════════════
+        assessment =
+        "Rapid response advised. Situation may escalate.";
 
+    }
+    else {
 
-${[...new Set(actions)].join("\n")}
-═══════════════════════
-🚑 RESOURCE DEPLOYMENT
-═══════════════════════
+        assessment =
+        "Monitor situation and maintain communication.";
 
-🚑 Ambulances Required:
-${ambulances}
+    }
 
-👨‍⚕️ Medical Teams Required:
-${medicalTeams}
+    let report = "";
 
+    report += "🚨 ECHOLINK AI INCIDENT REPORT\n\n";
 
-🚒 Rescue Teams Required:
-${rescueTeams}
+    report += "👥 PEOPLE AFFECTED\n";
 
+    report += (data.people || "Unknown") + "\n\n";
 
+    report += "🚨 INCIDENT TYPE\n";
 
-═══════════════════════
-🧠 AI ASSESSMENT
-═══════════════════════
+    report += data.category.join(", ");
 
-${severity === "HIGH"
-? "Immediate multi-agency response recommended."
-: severity === "MEDIUM"
-? "Rapid response advised. Situation may escalate."
-: "Monitor situation and maintain communication."}
-═══════════════════════
-📡 Generated by EchoLink Offline AI
-═══════════════════════
+    report += "\n\n";
 
-`;
-});
-fileButton.addEventListener("click", () => {
+    report += "⚠️ THREAT LEVEL\n";
+
+    report += level + "\n\n";
+
+    report += "⭐ PRIORITY SCORE\n";
+
+    report += Math.min(priority,10) + "/10\n\n";
+
+    if (data.people >= 50) {
+
+        report +=
+        "🚨 CRITICAL MASS CASUALTY EVENT DETECTED\n\n";
+
+    }
+
+    report += "📋 RECOMMENDED ACTIONS\n\n";
+
+    for (let i = 0; i < uniqueActions.length; i++) {
+
+        report += uniqueActions[i] + "\n";
+
+    }
+
+    report += "\n";
+
+    report += "🚑 RESOURCE DEPLOYMENT\n\n";
+
+    report += "🚑 Ambulances Required : ";
+
+    report += data.ambulances + "\n";
+
+    report += "👨‍⚕️ Medical Teams Required : ";
+
+    report += data.medical + "\n";
+
+    report += "🚒 Rescue Teams Required : ";
+
+    report += data.rescue + "\n\n";
+
+    report += "🧠 AI ASSESSMENT\n\n";
+
+    report += assessment;
+
+    report += "\n\n";
+
+    report += "📡 Generated by EchoLink Offline AI";
+
+    return report.replace(/\n/g,"<br>");
+
+}fileButton.addEventListener("click", function () {
 
     fileInput.click();
 
-});
-fileInput.addEventListener("change", () => {
-
-
+});fileInput.addEventListener("change", function () {
 
     const file = fileInput.files[0];
-    if (!file) return;
+
+    if (!file) {
+
+        return;
+
+    }
+
+    uploadFile(file);
+
+});function uploadFile(file) {
 
     const reader = new FileReader();
 
@@ -644,11 +717,11 @@ fileInput.addEventListener("change", () => {
 
             user: username,
 
-
             fileName: file.name,
-            fileType: file.type,
-            fileData: reader.result
 
+            fileType: file.type,
+
+            fileData: reader.result
 
         });
 
@@ -656,125 +729,154 @@ fileInput.addEventListener("change", () => {
 
     reader.readAsDataURL(file);
 
-});
+}socket.on("receiveFile", function (data) {
 
-// =========================================
-// FILE SHARING
-// =========================================
+    const box = document.createElement("div");
 
-socket.on("receiveFile", (data) => {
-    const div = document.createElement("div");
+    box.classList.add("message");
 
-    div.className = "message";
+    const name = document.createElement("b");
 
+    name.textContent = data.user;
 
+    box.appendChild(name);
 
-    if (data.fileType.startsWith("image")) {
-        div.innerHTML = `
-            <b>${data.user}</b><br>
-            <img src="${data.fileData}" style="width:220px;border-radius:10px;">
-        `;
+    box.appendChild(document.createElement("br"));
 
-    } else {
+    if (data.fileType.indexOf("image") == 0) {
 
-        div.innerHTML = `
-            <b>${data.user}</b><br>
-            <a href="${data.fileData}" download="${data.fileName}">
-                📄 ${data.fileName}
-            </a>
-        `;
+        const img = document.createElement("img");
+
+        img.src = data.fileData;
+
+        img.style.width = "220px";
+
+        img.style.borderRadius = "10px";
+
+        box.appendChild(img);
+
+    }
+    else {
+
+        const link = document.createElement("a");
+
+        link.href = data.fileData;
+
+        link.download = data.fileName;
+
+        link.textContent = "📄 " + data.fileName;
+
+        box.appendChild(link);
 
     }
 
-
-
-
-    chatBox.appendChild(div);
+    chatBox.appendChild(box);
 
     chatBox.scrollTop = chatBox.scrollHeight;
 
-});
+});recordButton.addEventListener("click", startRecording);async function startRecording() {
 
-// VOICE MESSAGE
+    if (
+        mediaRecorder == null ||
+        mediaRecorder.state == "inactive"
+    ) {
 
+        const stream =
+        await navigator.mediaDevices.getUserMedia({
 
-
-recordButton.addEventListener("click", async () => {
-
-    // Start Recording
-    if (mediaRecorder === null || mediaRecorder.state === "inactive") {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
             audio: true
+
         });
 
         audioChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder =
+        new MediaRecorder(stream);
 
         mediaRecorder.start();
 
+        recordButton.textContent =
+        "⏹ Stop";
 
-
-        recordButton.innerHTML = "⏹ Stop";
-        mediaRecorder.ondataavailable = (event) => {
+        mediaRecorder.ondataavailable =
+        function (event) {
 
             audioChunks.push(event.data);
 
-
         };
 
-        mediaRecorder.onstop = () => {
-
-            const audioBlob = new Blob(audioChunks, {
-                type: "audio/webm"
-            });
-
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-
-                socket.emit("voiceMessage", {
-
-                    user: username,
-
-                    audio: reader.result
-                });
-
-            };
-            reader.readAsDataURL(audioBlob);
-
-
-
-        };
+        mediaRecorder.onstop =
+        sendVoice;
 
     }
-    // Stop Recording
     else {
+
         mediaRecorder.stop();
 
-        recordButton.innerHTML = "🎙️ Record";
+        recordButton.textContent =
+        "🎙️ Record";
+
     }
 
+}function sendVoice() {
+
+    const audio =
+    new Blob(audioChunks, {
+
+        type: "audio/webm"
+
+    });
+
+    const reader =
+    new FileReader();
+
+    reader.onloadend =
+    function () {
+
+        socket.emit("voiceMessage", {
+
+            user: username,
+
+            audio: reader.result
+
+        });
+
+    };
+
+    reader.readAsDataURL(audio);
+
+}socket.on("voiceMessage", function (data) {
+
+    const box =
+    document.createElement("div");
+
+    box.classList.add("message");
+
+    const name =
+    document.createElement("b");
+
+    name.textContent =
+    data.user;
+
+    const line =
+    document.createElement("br");
+
+    const player =
+    document.createElement("audio");
+
+    player.controls = true;
+
+    player.src = data.audio;
+
+    box.appendChild(name);
+
+    box.appendChild(line);
+
+    box.appendChild(player);
+
+    chatBox.appendChild(box);
+
+    chatBox.scrollTop =
+    chatBox.scrollHeight;
+
 });
-
-
-socket.on("voiceMessage", (data) => {
-
-    const div = document.createElement("div");
-    div.className = "message";
-
-
-
-    div.innerHTML = `
-        <b>${data.user}</b><br>
-        <audio controls src="${data.audio}"></audio>
-    `;
-
-    chatBox.appendChild(div);
-
-
-
-    chatBox.scrollTop = chatBox.scrollHeight;
-});
-
-
